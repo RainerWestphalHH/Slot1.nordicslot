@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<!-- Sprache auf Deutsch gesetzt -->
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta-Tags für SEO hinzugefügt -->
+    <meta name="description" content="NORDICSLOTS Leaderboard - Verfolge die besten Spieler und gewinne tolle Preise!">
+    <meta name="keywords" content="NORDICSLOTS, Leaderboard, Gaming, Preise, Hype.bet">
+    <title>NORDICSLOTS Leaderboard</title>
+    <!-- Externe Ressourcen -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom, #1A0A33, #000000);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        /* Animation für fallende Dollar-Noten (Kommentare korrigiert) */
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(120vh) rotate(720deg);
+                opacity: 0.5;
+            }
+        }
+
+        .dollar-note {
+            position: absolute;
+            top: -50px;
+            font-size: 3rem;
+            color: #FFD700;
+            animation: fall linear infinite;
+            pointer-events: none;
+            z-index: 0;
+            /* Performance-Optimierung für die Animation */
+            will-change: transform, opacity;
+        }
+
+        /* Reduzierte Anzahl für bessere Performance */
+        .dollar-note:nth-child(1) { left: 5%; animation-duration: 10s; animation-delay: 0s; }
+        .dollar-note:nth-child(2) { left: 15%; animation-duration: 12s; animation-delay: 2s; }
+        .dollar-note:nth-child(3) { left: 25%; animation-duration: 9s; animation-delay: 1s; }
+        .dollar-note:nth-child(4) { left: 35%; animation-duration: 11s; animation-delay: 3s; }
+        .dollar-note:nth-child(5) { left: 45%; animation-duration: 13s; animation-delay: 0.5s; }
+        .dollar-note:nth-child(6) { left: 55%; animation-duration: 10.5s; animation-delay: 2.5s; }
+        .dollar-note:nth-child(7) { left: 65%; animation-duration: 9.5s; animation-delay: 1.5s; }
+        .dollar-note:nth-child(8) { left: 75%; animation-duration: 12s; animation-delay: 3.5s; }
+        .dollar-note:nth-child(9) { left: 85%; animation-duration: 8s; animation-delay: 0s; }
+        .dollar-note:nth-child(10) { left: 95%; animation-duration: 11s; animation-delay: 2s; }
+
+        /* Gemeinsame Container-Klasse für Konsistenz */
+        .container-shared {
+            max-width: 550px;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Social Media Links Styling */
+        .social-links-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            z-index: 1;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 0.9rem;
+            transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px);
+            color: #FFD700;
+        }
+
+        .social-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #FFD700;
+        }
+
+        /* Kick Video Player Styling */
+        #kickVideoContainer {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+        #kickVideoContainer.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #kickVideoContainer .bg-gray-900 {
+            background-color: rgba(17, 24, 39, 0.9);
+        }
+
+        #kickVideoContainer iframe {
+            display: block;
+        }
+
+        #openVideoButton {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 1001;
+            background-color: #FFD700;
+            color: #000000;
+            padding: 0.75rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        #openVideoButton:hover {
+            background-color: #FFBF00;
+        }
+
+        #closeVideoButton {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        /* Haupttitel "NORDICSLOTS" */
+        .nordicslots-main-title {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #00FF00;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+            text-align: center;
+        }
+
+        /* Zusätzlicher Text über dem Leaderboard */
+        .leaderboard-pre-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #FFD700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        /* Leaderboard Hauptcontainer-Stile */
+        .main-leaderboard-container {
+            background-color: #1A1A1A;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            position: relative;
+            border: 2px solid #FFD700;
+            padding-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 2rem;
+        }
+
+        /* Timer-Stil */
+        .timer-container {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 2px solid #00FF00;
+            border-radius: 0.75rem;
+            background-color: rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .timer-container .timer-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00FF00;
+            letter-spacing: 0.1em;
+        }
+
+        .leaderboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            gap: 2rem;
+        }
+
+        .leaderboard-header .header-icon {
+            height: 150px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .leaderboard-header .header-icon.rotate-left {
+            transform: rotate(-45deg);
+        }
+
+        .leaderboard-header .header-icon.rotate-right {
+            transform: rotate(45deg);
+        }
+
+        .leaderboard-header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .leaderboard-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: visible;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .leaderboard-list::-webkit-scrollbar {
+            display: none; /* Webkit */
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2c2c2c;
+            padding: 0.6rem 1.2rem;
+            margin-bottom: 0.75rem;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            transition: background-color 0.2s ease-in-out;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .leaderboard-item:hover {
+            background-color: #3a3a3a;
+        }
+
+        .leaderboard-item.top-1 {
+            background: linear-gradient(to right, #FFD700, #DAA520);
+            color: #000000;
+            font-size: 1.1rem;
+            font-weight: 800;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .leaderboard-item .rank { width: 10%; text-align: left; font-weight: 800; }
+        .leaderboard-item .name { width: 45%; text-align: left; }
+        .leaderboard-item .xp { width: 20%; text-align: center; color: #FF0000; font-size: 0.9rem; }
+        .leaderboard-item .prize { width: 25%; text-align: right; color: #FFD700; font-weight: 700; }
+        .leaderboard-item.top-1 .rank, .leaderboard-item.top-1 .prize { color: #000000; }
+
+
+        .leaderboard-footer {
+            margin-top: 2rem;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            line-height: 1.3;
+        }
+
+        /* Responsive Anpassungen */
+        @media (max-width: 640px) {
+            .nordicslots-main-title { font-size: 2.5rem; letter-spacing: 0.15em; }
+            .leaderboard-pre-title { font-size: 1rem; }
+            .timer-container .timer-text { font-size: 1rem; }
+            .main-leaderboard-container { padding: 1rem; max-width: 95%; }
+            .leaderboard-header { flex-direction: column; gap: 0.5rem; }
+            .leaderboard-header .header-icon { height: 90px; }
+            .leaderboard-header .header-icon.rotate-left, .leaderboard-header .header-icon.rotate-right { transform: rotate(0deg); }
+            .leaderboard-header h1 { font-size: 1.8rem; letter-spacing: 0.1em; }
+            .leaderboard-item .rank { width: 15%; margin-right: 0.3rem; }
+            .leaderboard-item .name { width: 40%; }
+            .leaderboard-item .xp { width: 20%; text-align: left; margin-left: 0.3rem; }
+            .leaderboard-item .prize { width: 25%; text-align: right; }
+            .leaderboard-footer { font-size: 1rem; letter-spacing: 0.08em; }
+        }
+
+        /* Media Query für sehr kleine Bildschirme */
+        @media (max-width: 320px) {
+            .nordicslots-main-title { font-size: 2rem; }
+            .leaderboard-item { font-size: 0.9rem; padding: 0.5rem; }
+            .social-icon { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Reduzierte Anzahl an Dollar-Noten für bessere Performance -->
+    <div class="dollar-note">$</div> <div class="dollar-note">$</div> <div class="dollar-note">$</div>
+    <div class="dollar-note">$</div> <div class="dollar-note">$</div> <div class="dollar-note">$</div>
+    <div class="dollar-note">$</div> <div class="dollar-note">$</div> <div class="dollar-note">$</div>
+    <div class="dollar-note">$</div>
+
+    <div class="nordicslots-main-title">NORDICSLOTS</div>
+    <div class="leaderboard-pre-title">CODE : Nordicslots</div>
+
+    <div class="timer-container container-shared">
+        <span id="countdown-timer" class="timer-text"></span>
+    </div>
+
+    <div class="main-leaderboard-container container-shared">
+        <div class="leaderboard-header">
+            <!-- Bildpfade korrigiert mit Fallback und Lazy Loading -->
+            <img src="./assets/image.png" alt="Leaderboard Icon Left" class="header-icon rotate-left" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/150x150/1A0A33/FFD700?text=Icon';">
+            <h1>LEADERBOARD</h1>
+            <img src="./assets/twitch_kick_avatar.png" alt="Kick Avatar" class="header-icon rotate-right" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/150x150/1A0A33/00FF00?text=Avatar';">
+        </div>
+        <ul id="leaderboard-list" class="leaderboard-list">
+            <li class="loading-message">Lade Leaderboard-Daten...</li>
+        </ul>
+        <div class="leaderboard-footer">
+            GET LUCKY<br>GET HYPED
+        </div>
+    </div>
+
+    <!-- Social Media Links mit echten URLs und ARIA-Labels -->
+    <div class="social-links-container">
+        <a href="https://www.youtube.com/yourchannel" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Besuche unseren YouTube-Kanal">
+            <i class="fab fa-youtube social-icon"></i> YouTube
+        </a>
+        <a href="https://www.twitch.tv/yourchannel" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Folge uns auf Twitch">
+            <i class="fab fa-twitch social-icon"></i> Twitch
+        </a>
+        <a href="https://discord.gg/yourinvite" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Tritt unserem Discord-Server bei">
+            <i class="fab fa-discord social-icon"></i> Discord
+        </a>
+        <a href="https://www.instagram.com/yourprofile" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Folge uns auf Instagram">
+            <i class="fab fa-instagram social-icon"></i> Instagram
+        </a>
+    </div>
+
+    <!-- Kick Video Player mit ARIA-Labels -->
+    <div id="kickVideoContainer" class="rounded-lg shadow-lg overflow-hidden w-full max-w-xs bg-gray-900">
+        <div class="flex justify-between items-center p-2">
+            <span class="text-white text-sm font-semibold">Live Stream</span>
+            <button id="closeVideoButton" class="text-gray-400 hover:text-white" aria-label="Live-Stream schließen">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <iframe src="https://player.kick.com/yourchannel" width="100%" height="200" frameborder="0" scrolling="no" allowfullscreen="true" title="Kick Live Stream"></iframe>
+    </div>
+    <button id="openVideoButton" class="flex items-center justify-center" aria-label="Live-Stream öffnen">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M4 7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V9a2 2 0 00-2-2H4z"></path></svg>
+    </button>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Video Player Logik (unverändert) ---
+        const kickVideoContainer = document.getElementById('kickVideoContainer');
+        const openVideoButton = document.getElementById('openVideoButton');
+        const closeVideoButton = document.getElementById('closeVideoButton');
+        openVideoButton.addEventListener('click', () => {
+            kickVideoContainer.classList.add('show');
+            openVideoButton.style.display = 'none';
+        });
+        closeVideoButton.addEventListener('click', () => {
+            kickVideoContainer.classList.remove('show');
+            openVideoButton.style.display = 'flex';
+        });
+
+        // --- Countdown-Timer Logik (unverändert) ---
+        const countdownEl = document.getElementById('countdown-timer');
+        function updateCountdown() {
+            const now = new Date();
+            const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            const timeLeft = lastDayOfMonth - now;
+            if (timeLeft < 0) {
+                countdownEl.textContent = "00:00:00:00";
+                return;
+            }
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            countdownEl.textContent = `${String(days).padStart(2, '0')}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+        const timerInterval = setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // --- SICHERE API-INTEGRATION (NEUE STRUKTUR) ---
+        const leaderboardList = document.getElementById('leaderboard-list');
+
+        /**
+         * SICHERHEITSHINWEIS: Diese Funktion simuliert einen Aufruf an Ihr eigenes Backend.
+         * Der API-Schlüssel darf NIEMALS hier im Frontend stehen.
+         * Erstellen Sie einen Server (siehe Anleitung unten), der die Anfrage an die Hype.bet API stellt.
+         */
+        async function fetchFromBackend() {
+            // Dies ist die URL zu Ihrem eigenen Server-Endpunkt, den Sie erstellen müssen.
+            const YOUR_BACKEND_URL = '/api/leaderboard'; // Beispielpfad
+
+            try {
+                const response = await fetch(YOUR_BACKEND_URL);
+                if (!response.ok) {
+                    throw new Error(`Backend-Fehler: ${response.statusText} (${response.status})`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Fehler beim Abrufen der Daten vom Backend:', error);
+                // Zeigt eine benutzerfreundliche Fehlermeldung an
+                leaderboardList.innerHTML = `<li class="error-message">Fehler beim Laden des Leaderboards. Bitte versuchen Sie es später erneut.</li>`;
+                return null; // Gibt null zurück, um weitere Verarbeitung zu stoppen
+            }
+        }
+
+        /**
+         * Rendert das Leaderboard mit den abgerufenen Daten.
+         * Diese Funktion ist jetzt robuster und prüft die Datenstruktur.
+         */
+        function renderLeaderboard(bets) {
+            leaderboardList.innerHTML = ''; // Vorhandene Einträge löschen
+
+            // Prüft, ob 'bets' ein gültiges Array ist
+            if (!Array.isArray(bets) || bets.length === 0) {
+                leaderboardList.innerHTML = '<li class="error-message">Derzeit keine Leaderboard-Daten verfügbar.</li>';
+                return;
+            }
+
+            // Sortiert sicher, auch wenn 'wagered' fehlt
+            bets.sort((a, b) => (b.wagered || 0) - (a.wagered || 0));
+
+            for (let i = 0; i < Math.min(bets.length, 10); i++) {
+                const entry = bets[i];
+                
+                // Überspringt ungültige Einträge, um Fehler zu vermeiden
+                if (!entry || !entry.user || typeof entry.user.username === 'undefined' || typeof entry.wagered === 'undefined') {
+                    continue;
+                }
+
+                const rank = i + 1;
+                let topClass = '';
+                let prizeText = '';
+
+                if (rank === 1) { topClass = 'top-1'; prizeText = 'PRIZE $400'; }
+                else if (rank === 2) { prizeText = 'PRIZE $300'; }
+                else if (rank === 3) { prizeText = 'PRIZE $200'; }
+                else {
+                    const prizes = ['$150', '$100', '$90', '$80', '$70', '$60', '$50'];
+                    prizeText = prizes[i - 3] || '';
+                }
+
+                const listItem = document.createElement('li');
+                listItem.className = `leaderboard-item ${topClass}`;
+                listItem.innerHTML = `
+                    <span class="rank">${rank}.</span>
+                    <span class="name">${entry.user.username}</span>
+                    <span class="xp">XP ${Number(entry.wagered).toFixed(2)}</span>
+                    <span class="prize">${prizeText}</span>
+                `;
+                leaderboardList.appendChild(listItem);
+            }
+        }
+
+        /**
+         * Hauptfunktion, die den Prozess startet.
+         */
+        async function initializeLeaderboard() {
+            const data = await fetchFromBackend();
+            if (data && data.summarizedBets) {
+                renderLeaderboard(data.summarizedBets);
+            }
+        }
+
+        // Leaderboard beim Laden der Seite initialisieren
+        initializeLeaderboard();
+    });
+    </script>
+</body>
+</html>
