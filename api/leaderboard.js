@@ -7,7 +7,7 @@ const fetch = require('node-fetch');
 module.exports = async (req, res) => {
     // SICHERHEIT: Der API-Schlüssel ist hier auf dem Server.
     // Bessere Methode: Speichern Sie diesen als "Environment Variable" in Vercel.
-    const API_KEY = '+IzAuLgXATRBlTxnFWdEHrZisLf0DWKc3E/OVXzYpXZSplDDtgFEDcKmlc9912xqsCAnJECuR7Wf7RwqCDE4Lt6XgvXIN6amuobI';
+    const API_KEY = 'vtTYPePW057KLbPh3vOeej5hLfyX05nGbYVzCHSNqT+3eDsg0mMeHvOjkmbcAA0Debxi56vzPHR2HQ6LU4LFdpsiYky3SM+Ku4Ar';
     const HYPE_API_URL = 'https://wallet-api.hype.bet/api/v1/affiliate/creator/get-stats';
 
     // Stellt sicher, dass nur POST-Anfragen erlaubt sind.
